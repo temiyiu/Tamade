@@ -1,0 +1,11 @@
+{
+  "name": "TAMADE — Tabungan Masa Depan",
+  "short_name": "TAMADE",
+  "description": "Aplikasi tabungan lucu untuk mencatat saldo dan target impian.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff4f8",
+  "theme_color": "#f8d9e8",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f8d9e8">
+<meta name="description" content="TAMADE — Tabungan Masa Depan. Catat tabungan, target, dan impianmu.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>TAMADE — Tabungan Masa Depan</title>
+<style>
+:root{--bg:#fff4f8;--panel:#fff;--ink:#633b52;--muted:#9a7488;--accent:#dc83ae;--accent2:#f5c2d9;--soft:#fde7f0;--line:#f2d6e3;--shadow:0 12px 32px #9d5c7a18}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:radial-gradient(var(--accent2) 1px,transparent 1px);background-size:22px 22px}
+.app{max-width:760px;margin:auto;padding:18px 16px 38px;position:relative}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0 18px}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:48px;height:48px;border-radius:17px;background:var(--soft);display:grid;place-items:center;font-size:27px;box-shadow:var(--shadow)}
+h1{font-size:23px;margin:0;letter-spacing:.5px} .tag{font-size:11px;color:var(--muted);margin-top:2px}
+.iconbtn,.btn{border:0;border-radius:14px;background:var(--soft);color:var(--ink);padding:11px 14px;font-weight:800;cursor:pointer}
+.hero{background:linear-gradient(135deg,var(--soft),var(--panel));border:1px solid var(--line);border-radius:26px;padding:22px;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:10px}.eyebrow{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.balance{font-size:clamp(27px,7vw,39px);font-weight:900;margin:8px 0 4px;letter-spacing:-1px;overflow-wrap:anywhere}
+.sub{font-size:12px;color:var(--muted)}.mascot{font-size:64px;filter:drop-shadow(0 7px 5px #00000012);animation:bob 3s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.progress-wrap{height:12px;background:var(--panel);border-radius:20px;margin:17px 0 8px;overflow:hidden;border:1px solid var(--line)}
+.progress{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:20px;transition:width .3s}
+.progressline{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow)}
+.card h2{font-size:14px;margin:0 0 12px}.field{display:flex;flex-direction:column;gap:6px;margin:9px 0}
+label{font-size:12px;color:var(--muted);font-weight:700}input,select{width:100%;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:12px;padding:12px;font:inherit;outline:none;min-width:0}
+input:focus,select:focus{border-color:var(--accent)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.btn.primary{background:var(--accent);color:white}.btn.secondary{background:var(--soft)}
+.wide{width:100%;margin-top:8px}.section-title{font-size:17px;margin:22px 2px 10px}
+.themes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.theme{border:1px solid var(--line);border-radius:15px;padding:10px 4px;background:var(--panel);color:var(--ink);font-size:11px;font-weight:800;cursor:pointer}.theme span{display:block;font-size:22px;margin-bottom:4px}.theme.active{outline:2px solid var(--accent);background:var(--soft)}
+.history{display:flex;flex-direction:column;gap:8px}.tx{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 12px;border-radius:14px;background:var(--bg);font-size:13px}.tx small{display:block;color:var(--muted);margin-top:3px}.plus{color:#27845c;font-weight:900}.minus{color:#c14d62;font-weight:900}
+.empty{text-align:center;padding:18px;color:var(--muted);font-size:13px}
+.footer{text-align:center;color:var(--muted);font-size:11px;margin:24px 0 8px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:white;padding:12px 18px;border-radius:15px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:5;max-width:90%;text-align:center}.toast.show{opacity:1}
+@media(max-width:420px){.themes{grid-template-columns:repeat(4,1fr)}.hero{padding:18px}.mascot{font-size:52px}.card{padding:13px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+ <div class="brand"><div class="logo">🐻</div><div><h1>TAMADE</h1><div class="tag">Tabungan Masa Depan ♡</div></div></div>
+ <button class="iconbtn" id="musicBtn" aria-label="Musik">♫ Musik: OFF</button>
+</header>
+
+<section class="hero">
+ <div class="hero-top"><div><div class="eyebrow">Total tabunganmu</div><div class="balance" id="balance">Rp0</div><div class="sub" id="targetCaption">Mulai kumpulkan impianmu!</div></div><div class="mascot" id="mascot">🐻</div></div>
+ <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+ <div class="progressline"><span id="progressText">0% tercapai</span><span id="targetText">Target Rp0</span></div>
+</section>
+
+<div class="grid">
+ <section class="card">
+  <h2>💰 Catat uang</h2>
+  <div class="field"><label for="amount">Nominal (rupiah)</label><input id="amount" type="number" min="1" step="1000" placeholder="Contoh: 10000"></div>
+  <div class="field"><label for="note">Keterangan</label><input id="note" maxlength="45" placeholder="Uang jajan, hadiah..."></div>
+  <div class="actions"><button class="btn primary" id="addBtn">＋ Tambah</button><button class="btn secondary" id="subtractBtn">－ Kurangi</button></div>
+ </section>
+ <section class="card">
+  <h2>🎯 Target impian</h2>
+  <div class="field"><label for="goalName">Nama target</label><input id="goalName" maxlength="35" placeholder="Contoh: Beli sepatu"></div>
+  <div class="field"><label for="goalAmount">Target (rupiah)</label><input id="goalAmount" type="number" min="0" step="1000" placeholder="500000"></div>
+  <button class="btn primary wide" id="saveGoal">Simpan target</button>
+ </section>
+</div>
+
+<h2 class="section-title">🎨 Pilih tema kesukaanmu</h2>
+<section class="card"><div class="themes" id="themes"></div></section>
+
+<h2 class="section-title">📒 Riwayat tabungan</h2>
+<section class="card"><div class="history" id="history"><div class="empty">Belum ada transaksi. Yuk mulai menabung! 🌷</div></div><button class="btn secondary wide" id="resetBtn">Hapus semua data tabungan</button></section>
+
+<div class="footer">Dibuat dengan semangat untuk masa depanmu ♡<br>Data tersimpan di perangkat ini.</div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const themes=[
+ {id:'pink',name:'Pink',emoji:'🎀',mascot:'🐻',bg:'#fff4f8',panel:'#ffffff',ink:'#633b52',muted:'#9a7488',accent:'#dc83ae',accent2:'#f5c2d9',soft:'#fde7f0',line:'#f2d6e3'},
+ {id:'lavender',name:'Lavender',emoji:'💜',mascot:'🐰',bg:'#f7f2ff',panel:'#ffffff',ink:'#51416d',muted:'#8e80a8',accent:'#a58ad8',accent2:'#d9c9f4',soft:'#eee5ff',line:'#e2d7f5'},
+ {id:'ocean',name:'Biru laut',emoji:'🌊',mascot:'🦭',bg:'#effaff',panel:'#ffffff',ink:'#31576b',muted:'#7295a7',accent:'#58a9c9',accent2:'#b7e3f2',soft:'#dff4fb',line:'#d0eaf3'},
+ {id:'grey',name:'Abu-abu',emoji:'🩶',mascot:'🐨',bg:'#f3f4f6',panel:'#ffffff',ink:'#454b55',muted:'#858c97',accent:'#8994a3',accent2:'#cbd0d8',soft:'#e8ebef',line:'#dfe2e7'},
+ {id:'yellow',name:'Kuning',emoji:'🌼',mascot:'🐥',bg:'#fffbed',panel:'#ffffff',ink:'#69572d',muted:'#a18c56',accent:'#dfbd58',accent2:'#f7e6a7',soft:'#fff4cf',line:'#f2e7c2'},
+ {id:'violet',name:'Violet',emoji:'✨',mascot:'🐱',bg:'#f6f0ff',panel:'#ffffff',ink:'#50366e',muted:'#8c70a8',accent:'#8753c7',accent2:'#cdb0f0',soft:'#eadcff',line:'#e1d1f5'},
+ {id:'cherry',name:'Cherry',emoji:'🍒',mascot:'🦊',bg:'#fff1f2',panel:'#ffffff',ink:'#6d303e',muted:'#a87882',accent:'#c3445b',accent2:'#f0b3bd',soft:'#ffe0e5',line:'#f2d0d6'},
+ {id:'black',name:'Black',emoji:'🖤',mascot:'🐈‍⬛',bg:'#17171c',panel:'#24242c',ink:'#f3edf5',muted:'#aaa2b2',accent:'#b5a2c8',accent2:'#655b70',soft:'#34313b',line:'#48424f'}
+];
+const $=id=>document.getElementById(id);
+let state={balance:0,goal:0,goalName:'',theme:'pink',history:[]};
+try{const saved=JSON.parse(localStorage.getItem('tamade-v1'));if(saved)state={...state,...saved};}catch(e){}
+function money(n){return new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(n||0)}
+function save(){localStorage.setItem('tamade-v1',JSON.stringify(state));render()}
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2300)}
+function applyTheme(){const t=themes.find(x=>x.id===state.theme)||themes[0];for(const k of ['bg','panel','ink','muted','accent','accent2','soft','line'])document.documentElement.style.setProperty('--'+k,t[k]);$('mascot').textContent=t.mascot;document.querySelector('.logo').textContent=t.mascot;document.querySelector('meta[name="theme-color"]').content=t.accent2;document.querySelectorAll('.theme').forEach(b=>b.classList.toggle('active',b.dataset.id===state.theme))}
+function render(){applyTheme();$('balance').textContent=money(state.balance);$('targetCaption').textContent=state.goalName?state.goalName:'Setiap langkah kecil berarti ♡';$('targetText').textContent='Target '+money(state.goal);let p=state.goal>0?Math.min(100,Math.round(state.balance/state.goal*100)):0;$('progress').style.width=p+'%';$('progressText').textContent=p+'% tercapai';$('goalName').value=state.goalName;$('goalAmount').value=state.goal||'';const h=$('history');if(!state.history.length){h.innerHTML='<div class="empty">Belum ada transaksi. Yuk mulai menabung! 🌷</div>'}else{h.innerHTML=state.history.slice().reverse().map(x=>`<div class="tx"><div><strong>${escapeHtml(x.note)}</strong><small>${new Date(x.date).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'})}</small></div><span class="${x.type==='in'?'plus':'minus'}">${x.type==='in'?'+':'−'}${money(x.amount)}</span></div>`).join('')}}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function transaction(type){let amount=Math.floor(Number($('amount').value));if(!amount||amount<1){toast('Masukkan nominal yang benar dulu ya!');return}if(type==='out'&&amount>state.balance){toast('Saldo tabunganmu belum cukup 💗');return}state.balance+=type==='in'?amount:-amount;state.history.push({type,amount,note:$('note').value.trim()||(type==='in'?'Menambah tabungan':'Mengurangi tabungan'),date:new Date().toISOString()});$('amount').value='';$('note').value='';save();if(state.goal>0&&state.balance>=state.goal)toast('Yeay! Target tabungan tercapai! 🎉');else toast(type==='in'?'Berhasil menambah tabungan! 🌷':'Berhasil mengurangi tabungan.');}
+$('addBtn').onclick=()=>transaction('in');$('subtractBtn').onclick=()=>transaction('out');
+$('saveGoal').onclick=()=>{const n=Math.floor(Number($('goalAmount').value));if(n<0){toast('Target tidak valid');return}state.goal=n;state.goalName=$('goalName').value.trim();save();toast('Target impian berhasil disimpan! ✨')};
+$('resetBtn').onclick=()=>{if(confirm('Yakin ingin menghapus semua saldo, target, dan riwayat? Tindakan ini tidak bisa dibatalkan.')){state.balance=0;state.goal=0;state.goalName='';state.history=[];save();toast('Data tabungan sudah direset.')}}; 
+$('themes').innerHTML=themes.map(t=>`<button class="theme" data-id="${t.id}"><span>${t.emoji}</span>${t.name}</button>`).join('');document.querySelectorAll('.theme').forEach(b=>b.onclick=()=>{state.theme=b.dataset.id;save();toast('Tema '+themes.find(t=>t.id===state.theme).name+' dipakai! 💕')});
+let audioCtx=null,osc=null,musicOn=false,melodyTimer=null,step=0;const notes=[523.25,659.25,783.99,659.25,587.33,698.46,783.99,698.46];
+function music(){if(musicOn){clearInterval(melodyTimer);if(osc){try{osc.stop()}catch(e){}osc=null}musicOn=false;$('musicBtn').textContent='♫ Musik: OFF';return}try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();audioCtx.resume();musicOn=true;$('musicBtn').textContent='♫ Musik: ON';const play=()=>{if(!musicOn)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type='sine';o.frequency.value=notes[step++%notes.length];g.gain.setValueAtTime(.0001,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.035,audioCtx.currentTime+.04);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+.42);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.45)};play();melodyTimer=setInterval(play,520)}catch(e){toast('Musik tidak tersedia di browser ini.')}}$('musicBtn').onclick=music;
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;const b=document.createElement('button');b.className='btn primary wide';b.textContent='＋ Pasang TAMADE ke layar utama';b.onclick=async()=>{deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;b.remove()};document.querySelector('header').after(b)});
+</script>
+</body></html>
